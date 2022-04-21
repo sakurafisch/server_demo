@@ -32,12 +32,13 @@ fn handle_connection(mut stream: TcpStream) {
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878");
+    let pool = server_demo::ThreadPool::new(16);
     if let Err(e) = listener {
         println!("Error binding TCP listener:\n{}", e);
     } else if let Ok(l) = listener {
         for stream in l.incoming() {
             let stream = stream.unwrap();
-            std::thread::spawn(|| {
+            pool.execute(|| {
                 handle_connection(stream);
             });
         }
