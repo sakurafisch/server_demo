@@ -37,7 +37,9 @@ fn main() {
     } else if let Ok(l) = listener {
         for stream in l.incoming() {
             let stream = stream.unwrap();
-            handle_connection(stream);
+            std::thread::spawn(|| {
+                handle_connection(stream);
+            });
         }
     }
 }
